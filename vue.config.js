@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 8080;
 
 module.exports = {
   devServer: {
+    host: 'localhost', 
     progress: false,
     proxy: {
       "/api/": {
