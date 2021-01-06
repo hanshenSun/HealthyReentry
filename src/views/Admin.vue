@@ -142,11 +142,11 @@
               <h6>
                 Download Office Stats
               </h6>
-              
+
               <div class="row overflow-auto mx-0" style="height:400px">
                 <div class="col">
                   <div v-for="region in regionsForOfcStats" :key="region.name">
-                    
+
                     <div class="pt-2">
                       <i class="fas fa-angle-right"></i>
                       {{ region.name }}
@@ -175,7 +175,7 @@
                   </div>
                 </div>
               </div>
-              
+
             </div>
           </div>
           <div class="modal-footer">
@@ -218,7 +218,7 @@
               <div class="col">
 
                 <div v-for="region in regions" :key="region.name">
-                  
+
                   <div class="pt-2">
                     <i class="fas fa-angle-right"></i>
                     {{ region.name }}
@@ -245,7 +245,7 @@
                   </div>
 
                 </div>
-                
+
               </div>
             </div>
 
@@ -510,7 +510,7 @@
 <script>
 import enumStatusMap from "../../server/util/enumStatusMap.js";
 import storedRegions from "../../server/util/officeList.js";
-import graphToCsv from "../../server/util/csvUtils.js";
+// import graphToCsv from "../../server/util/csvUtils.js";
 
 function downloadCSV(content, fileName) {
   let dlTrigger = document.createElement('a');
@@ -520,6 +520,20 @@ function downloadCSV(content, fileName) {
   document.body.appendChild(dlTrigger);
   dlTrigger.click();
   document.body.removeChild(dlTrigger);
+}
+
+function nodeToCsvLine(node) {
+  let status = enumStatusMap.filter(i => i.code === node.status)[0];
+  if (node['statusLastUpdated'] !== "N/A") return `${node.name},${node.email},${node['number_of_encounters']},${node['degree-of-separation']},${status.label},${String(moment(node['statusLastUpdated']).format('lll')).replace(/\,/g, '')}\r\n`;
+  else return `${node.name},${node.email},${node['number_of_encounters']},${node['degree-of-separation']},${status.label},${node['statusLastUpdated']}\r\n`;
+}
+
+function graphToCsv(graph) {
+  let csv = csvHeader;
+  graph.map(n => {
+    csv += nodeToCsvLine(n);
+  });
+  return csv;
 }
 
 // ref: https://stackoverflow.com/questions/7641791/javascript-library-for-human-friendly-relative-date-formatting
@@ -625,7 +639,7 @@ export default {
   },
   methods: {
     async downloadGraphForSelectedAsCSV() {
-      let userEmails = this.users.filter(u => u.selected).map(u => u.email);  
+      let userEmails = this.users.filter(u => u.selected).map(u => u.email);
       if (userEmails.length < 1) return;
       this.isLoading = true;
       let postBody = {
@@ -739,7 +753,7 @@ export default {
       $(function () {
         $('#updateConfModal').modal('hide');
       });
-      
+
       this.isLoading = false;
 
     },
