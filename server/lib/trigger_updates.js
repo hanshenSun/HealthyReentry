@@ -103,6 +103,8 @@ async function triggerUpdates(triggerData, byAdmin, currentStatus) {
 
       let csv = csvHeader;
 
+      console.log("nodeToCsvLine", nodeToCsvLine);
+
       // gather direct contacts
       let emails = graph.reduce(function(out, x) {
         if (x['degree-of-separation'] === 1) {
